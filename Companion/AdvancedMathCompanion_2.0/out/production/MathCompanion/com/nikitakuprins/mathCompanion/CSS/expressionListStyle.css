@@ -1,0 +1,28 @@
+
+.list-cell:even {
+    -fx-background-color: "#c7d4d2";
+}
+.list-cell:odd {
+    -fx-background-color: "#abb8b6";
+}
+.list-cell:selected {
+    -fx-background-color: "#48615d";
+}
+ToolBar {
+    -fx-alignment: "CENTER";
+}
+#filterLabel {
+    -fx-font-size: 22;
+    -fx-max-width: "Infinity";
+    -fx-alignment: "CENTER";
+}
+#statisticsBox {
+    -fx-font-size: 20;
+    -fx-alignment: "CENTER_RIGHT";
+    -fx-padding: 0 20 0 0;
+    -fx-spacing: 7;
+}
+#sortBox {
+    -fx-font-size: 15;
+    -fx-spacing: 15;
+}

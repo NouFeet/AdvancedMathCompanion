@@ -1,0 +1,20 @@
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.geometry.Insets?>
+
+<DialogPane fx:controller="com.nikitakuprins.mathCompanion.DialogController"
+            xmlns:fx="http://javafx.com/fxml">
+    <header>
+        <Label text="Enter valid data" alignment="CENTER"/>
+    </header>
+    <content>
+        <GridPane hgap="20" vgap="10">
+            <Label text="Format example: 2 + 2 * 4 - 15 / 5" GridPane.rowIndex="0" GridPane.columnIndex="0"
+                   GridPane.columnSpan="2" alignment="CENTER" maxWidth="Infinity"/>
+            <Label text="Expression: " GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+            <TextField fx:id="expressionField" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        </GridPane>
+    </content>
+</DialogPane>

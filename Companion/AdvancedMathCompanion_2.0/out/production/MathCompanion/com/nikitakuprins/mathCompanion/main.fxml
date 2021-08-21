@@ -1,0 +1,102 @@
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ContextMenu?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.Tooltip?>
+
+<BorderPane fx:id="borderPane" fx:controller="com.nikitakuprins.mathCompanion.Controller"
+            xmlns:fx="http://javafx.com/fxml">
+    <left>
+        <GridPane stylesheets="@CSS/calculatorStyle.css">
+
+            <Label id="resultArea" fx:id="resultArea" text="0"
+                   GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="4"/>
+
+            <Button text="AC" GridPane.rowIndex="1" GridPane.columnIndex="0" onAction="#handleCalculatorButton"/>
+            <Button text="+/-" GridPane.rowIndex="1" GridPane.columnIndex="1" onAction="#handleCalculatorButton"/>
+            <Button text="\%" GridPane.rowIndex="1" GridPane.columnIndex="2" onAction="#handleCalculatorButton"/>
+            <Button text="÷" GridPane.rowIndex="1" GridPane.columnIndex="3" onAction="#handleCalculatorButton"/>
+
+            <Button text="7" GridPane.rowIndex="2" GridPane.columnIndex="0" onAction="#handleCalculatorButton"/>
+            <Button text="8" GridPane.rowIndex="2" GridPane.columnIndex="1" onAction="#handleCalculatorButton"/>
+            <Button text="9" GridPane.rowIndex="2" GridPane.columnIndex="2" onAction="#handleCalculatorButton"/>
+            <Button text="x" GridPane.rowIndex="2" GridPane.columnIndex="3" onAction="#handleCalculatorButton"/>
+
+            <Button text="4" GridPane.rowIndex="3" GridPane.columnIndex="0" onAction="#handleCalculatorButton"/>
+            <Button text="5" GridPane.rowIndex="3" GridPane.columnIndex="1" onAction="#handleCalculatorButton"/>
+            <Button text="6" GridPane.rowIndex="3" GridPane.columnIndex="2" onAction="#handleCalculatorButton"/>
+            <Button text="-" GridPane.rowIndex="3" GridPane.columnIndex="3" onAction="#handleCalculatorButton"/>
+
+            <Button text="1" GridPane.rowIndex="4" GridPane.columnIndex="0" onAction="#handleCalculatorButton"/>
+            <Button text="2" GridPane.rowIndex="4" GridPane.columnIndex="1" onAction="#handleCalculatorButton"/>
+            <Button text="3" GridPane.rowIndex="4" GridPane.columnIndex="2" onAction="#handleCalculatorButton"/>
+            <Button text="+" GridPane.rowIndex="4" GridPane.columnIndex="3" onAction="#handleCalculatorButton"/>
+
+            <Button text="0" GridPane.rowIndex="5" GridPane.columnIndex="0" GridPane.columnSpan="2" onAction="#handleCalculatorButton"/>
+            <Button text="." GridPane.rowIndex="5" GridPane.columnIndex="2" onAction="#handleCalculatorButton"/>
+            <Button text="=" GridPane.rowIndex="5" GridPane.columnIndex="3" onAction="#handleCalculatorButton"/>
+        </GridPane>
+    </left>
+    <center>
+        <VBox stylesheets="@CSS/expressionListStyle.css">
+            <MenuBar>
+                <Menu text="File">
+                    <MenuItem text="New" onAction="#newItemDialog"/>
+                    <MenuItem text="Edit" onAction="#editItemDialog"/>
+                    <MenuItem text="Delete" onAction="#deleteItem"/>
+                    <MenuItem text="Exit" onAction="#handleExit"/>
+                </Menu>
+            </MenuBar>
+            <Label id="filterLabel" text="FILTER"/>
+            <ToolBar>
+                <HBox id="sortBox">
+                    <ToggleButton fx:id="filterPlusButton" text="+" onAction="#handleFilterButton">
+                        <tooltip>
+                            <Tooltip text="Filter list to expressions containing plus(+). Can be combined with other filters"/>
+                        </tooltip>
+                    </ToggleButton>
+                    <ToggleButton fx:id="filterMinusButton" text="-" onAction="#handleFilterButton">
+                        <tooltip>
+                            <Tooltip text="Filter list to expressions containing plus(-). Can be combined with other filters"/>
+                        </tooltip>
+                    </ToggleButton>
+                    <ToggleButton fx:id="filterMultiplyButton" text="*" onAction="#handleFilterButton">
+                        <tooltip>
+                            <Tooltip text="Filter list to expressions containing plus(*). Can be combined with other filters"/>
+                        </tooltip>
+                    </ToggleButton>
+                    <ToggleButton fx:id="filterDivideButton" text="/" onAction="#handleFilterButton">
+                        <tooltip>
+                            <Tooltip text="Filter list to expressions containing plus(/). Can be combined with other filters"/>
+                        </tooltip>
+                    </ToggleButton>
+                </HBox>
+            </ToolBar>
+            <ListView fx:id="listView" VBox.vgrow="ALWAYS" onKeyPressed="#handleKeyPressed">
+                <contextMenu>
+                    <ContextMenu>
+                        <items>
+                            <MenuItem text="Delete" onAction="#deleteItem"/>
+                        </items>
+                    </ContextMenu>
+                </contextMenu>
+            </ListView>
+            <HBox id="statisticsBox">
+                <Label text="Digits:"/>
+                <Label fx:id="digitsAmount"/>
+                <Label text="Symbols:"/>
+                <Label fx:id="symbolsAmount"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

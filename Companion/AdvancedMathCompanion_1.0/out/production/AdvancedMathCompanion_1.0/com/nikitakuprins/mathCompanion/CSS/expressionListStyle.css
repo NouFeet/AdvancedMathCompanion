@@ -1,0 +1,26 @@
+
+.table-view .table-cell{
+    -fx-border-color: "#68706f";
+}
+.table-row-cell:even {
+    -fx-background-color: "#c7d4d2";
+}
+.table-row-cell:odd {
+    -fx-background-color: "#abb8b6";
+}
+.table-row-cell:selected {
+    -fx-background-color: "#48615d";
+    -fx-text-background-color: "White";
+}
+ToolBar {
+    -fx-alignment: "CENTER";
+}
+#filterLabel {
+    -fx-font-size: 22;
+    -fx-max-width: "Infinity";
+    -fx-alignment: "CENTER";
+}
+#sortBox {
+    -fx-font-size: 15;
+    -fx-spacing: 15;
+}

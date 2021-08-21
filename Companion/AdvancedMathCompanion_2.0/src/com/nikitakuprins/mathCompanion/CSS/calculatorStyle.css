@@ -1,0 +1,24 @@
+
+* {
+    -fx-border-color: "#1a2926";
+    -fx-border-width: 2.0;
+    -fx-max-width: "Infinity";
+    -fx-padding: 10;
+    -fx-vgap: 2;
+    -fx-hgap: 2;
+}
+GridPane {
+    -fx-background-color: "#c7d4d2";
+    -fx-alignment: "CENTER"
+}
+.button {
+     -fx-font-size: 15;
+     -fx-pref-height: 55;
+     -fx-pref-width: 55;
+ }
+#resultArea {
+    -fx-font-size: 25;
+    -fx-pref-height: 70;
+    -fx-background-color: "White";
+    -fx-alignment: "CENTER_RIGHT"
+}
