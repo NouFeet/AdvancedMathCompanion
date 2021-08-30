@@ -5,8 +5,10 @@
 > The 2.0 version uses stored procedure, while 1.0 not. I created two versions, just for potfolio to show that I have enough skills to do it in the both ways.
 
 ### How to run?
-> First, the file DBSchema contain the schema of MySQL database. Create the database by it.
-> Second, you have to change connection string in
+- First, the file DBSchema contain the schema of MySQL database. Create the database by it.
+- After that, you have to download/add JavaFX-11, JUnit 5 and mysql connector.
+
+- Then, you have to change connection string in
 > `AdvancedMathCompanion/Companion/AdvancedMathCompanion_version/src/com/nikitakuprins/mathCompanion/datamodel/DataSource.java`
 
 ```java 
