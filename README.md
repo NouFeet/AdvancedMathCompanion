@@ -21,3 +21,11 @@ private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NA
 - Calculator
 - Arithmetic expressions solver
 - Adding, editing or deleting list of expressions
+
+### What was used?
+
+- Java 11
+- SQL
+- JavaFX 11
+- JUnit 5
+- JDBC
