@@ -114,7 +114,7 @@ public class Controller {
         StringBuilder resultBuilder = new StringBuilder(oldResult);
 
         if (buttonTitle.matches("[0-9]")) {
-            if (oldResult.matches("[+\\-x÷]|0")) {
+            if (oldResult.matches("[+\\-x÷]|-*0")) {
                 resultBuilder = new StringBuilder();
             }
             resultBuilder.append(buttonTitle);
