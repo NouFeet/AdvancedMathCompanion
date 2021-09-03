@@ -14,7 +14,7 @@
 ```java 
 private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NAME + "?user=USER&password=PASSWORD";
 ```
-> Provide the valid username and password for your database 
+> Provide the valid username, password and host for your database 
 
 ### What the application does?
 
