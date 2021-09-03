@@ -8,13 +8,12 @@
 - First, the file DBSchema contain the schema of MySQL database. Create the database by it.
 - After that, you have to download/add JavaFX-11, JUnit 5 and mysql connector.
 
-- Then, you have to change connection string in
-> `AdvancedMathCompanion/Companion/AdvancedMathCompanion_version/src/com/nikitakuprins/mathCompanion/datamodel/DataSource.java`
+- Then, you have to change connection string by providing the valid username, password and host for your database in
+> `src/com/nikitakuprins/mathCompanion/datamodel/DataSource.java`
 
 ```java 
 private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NAME + "?user=USER&password=PASSWORD";
-```
-> Provide the valid username, password and host for your database 
+``` 
 
 ### What the application does?
 
