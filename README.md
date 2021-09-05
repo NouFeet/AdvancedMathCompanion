@@ -31,4 +31,4 @@ private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NA
 
 ### Previous version of project
 
-- [CasualMathCompanion](github.com/NouFeet/CasualMathCompanion)
+[CasualMathCompanion](https://github.com/NouFeet/CasualMathCompanion)
