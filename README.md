@@ -28,3 +28,7 @@ private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NA
 - JavaFX 11
 - JUnit 5
 - JDBC
+
+### Previous version of project
+
+- [CasualMathCompanion](github.com/NouFeet/CasualMathCompanion)
