@@ -237,7 +237,6 @@ public class DataSource {
 
     public void deleteExpression(int id) {
         try {
-            System.out.println(id);
             deleteExpression.setInt(1, id);
 
             if (deleteExpression.executeUpdate() != 1) {
