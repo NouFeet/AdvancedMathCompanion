@@ -237,9 +237,10 @@ public class DataSource {
 
     public void deleteExpression(int id) {
         try {
+            System.out.println(id);
             deleteExpression.setInt(1, id);
 
-            if (deleteExpression.executeUpdate() != 2) {
+            if (deleteExpression.executeUpdate() != 1) {
                 throw new SQLException("Delete failed to execute");
             } else {
                 dataItems.remove(getIndexOfItem(id));
