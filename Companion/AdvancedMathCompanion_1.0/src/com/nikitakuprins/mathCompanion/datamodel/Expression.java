@@ -26,9 +26,9 @@ public class Expression implements ExpressionTypes, Complexities {
     private final SimpleStringProperty expression;
     private final SimpleObjectProperty<BigDecimal> answer;
     private final SimpleObjectProperty<Date> date;
+    private final SimpleIntegerProperty typeId;
 
     private final SimpleStringProperty type;
-
     private final SimpleStringProperty complexity;
 
     public Expression() {
@@ -36,6 +36,7 @@ public class Expression implements ExpressionTypes, Complexities {
         this.expression = new SimpleStringProperty();
         this.answer = new SimpleObjectProperty<>();
         this.date = new SimpleObjectProperty<>();
+        this.typeId = new SimpleIntegerProperty();
         this.type = new SimpleStringProperty();
         this.complexity = new SimpleStringProperty();
     }
@@ -84,6 +85,18 @@ public class Expression implements ExpressionTypes, Complexities {
         this.date.set(date);
     }
 
+    public int getTypeId() {
+        return typeId.get();
+    }
+
+    public SimpleIntegerProperty typeIdProperty() {
+        return typeId;
+    }
+
+    public void setTypeId(int typeId) {
+        this.typeId.set(typeId);
+    }
+
     @Override
     public SimpleStringProperty typeProperty() {
         return type;
@@ -92,6 +105,10 @@ public class Expression implements ExpressionTypes, Complexities {
     @Override
     public void setType(String type) {
         this.type.set(type);
+    }
+
+    public String getType() {
+        return type.get();
     }
 
     @Override

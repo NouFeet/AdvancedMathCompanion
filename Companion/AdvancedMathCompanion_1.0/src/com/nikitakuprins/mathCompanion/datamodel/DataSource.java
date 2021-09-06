@@ -15,7 +15,6 @@
  */
 package com.nikitakuprins.mathCompanion.datamodel;
 
-import com.nikitakuprins.mathCompanion.Calculations;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -67,7 +66,7 @@ public class DataSource {
     private static final String QUERY_TYPE_BY_ID = "SELECT " + COLUMN_TYPES_TYPE + " FROM " + TABLE_TYPES +
             " WHERE " + COLUMN_TYPES_ID + " = ?";
     private static final String INSERT_EXPRESSION = "INSERT INTO " + TABLE_EXPRESSIONS + " VALUES " +
-            "( DEFAULT, ?, ?, ? )";
+            "( DEFAULT, ?, ?, ?, ? )";
 
     private static final String DELETE_EXPRESSION = "DELETE " + TABLE_EXPRESSIONS +
             " FROM " + TABLE_EXPRESSIONS +
@@ -208,6 +207,7 @@ public class DataSource {
             insertIntoExpression.setString(1, expression.getExpression());
             insertIntoExpression.setBigDecimal(2, expression.getAnswer());
             insertIntoExpression.setDate(3, expression.getDate());
+            insertIntoExpression.setInt(4, expression.getTypeId());
 
             int affectedRows = insertIntoExpression.executeUpdate();
 

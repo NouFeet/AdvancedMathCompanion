@@ -53,6 +53,7 @@ public class DialogController {
             newExpression.setExpression(expression);
             newExpression.setAnswer(answer);
             newExpression.setDate(date);
+            newExpression.setTypeId(typeId);
             newExpression.setType(instance.queryTypeById(typeId));
             newExpression.setComplexity(instance.queryComplexityByTypeId(typeId));
             return newExpression;
