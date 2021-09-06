@@ -24,16 +24,14 @@ import java.sql.*;
 public class DataSource {
 
     private static final String SCHEMA_NAME = "calculator";
-    private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NAME + "?user=USER&password=PASSWORD";
+    private static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/" + SCHEMA_NAME + "?user=root&password=p6zinamu";
 
     private static final String TABLE_EXPRESSIONS = "expressions";
     private static final String COLUMN_EXPRESSIONS_ID = "expression_id";
     private static final String COLUMN_EXPRESSIONS_EXPRESSION = "expression";
     private static final String COLUMN_EXPRESSIONS_ANSWER = "answer";
     private static final String COLUMN_EXPRESSIONS_DATE = "date";
-
-    private static final String TABLE_EXPRESSION_TO_TYPES = "expression_to_types";
-    private static final String COLUMN_EXPRESSION_TO_TYPES_EXPRESSION_ID = "expression_id";
+    private static final String COLUMN_EXPRESSIONS_TYPE = "type";
 
     private static final String TABLE_TYPES = "types";
     private static final String COLUMN_TYPES_ID = "type_id";
@@ -42,7 +40,7 @@ public class DataSource {
 
     private static final String TABLE_COMPLEXITIES = "complexities";
     private static final String COLUMN_COMPLEXITIES_ID = "complexity_id";
-    private static final String COLUMN_COMPLEXITIES_NAME = "name";
+    private static final String COLUMN_COMPLEXITIES_NAME = "complexity_name";
     private static final String COLUMN_COMPLEXITIES_DESCRIPTION = "description";
 
     private static final String EXPRESSIONS_VIEW = "expression_list";
@@ -53,8 +51,8 @@ public class DataSource {
             TABLE_TYPES + '.' + COLUMN_TYPES_TYPE + ", " + TABLE_COMPLEXITIES + '.' + COLUMN_COMPLEXITIES_NAME +
             ", " + TABLE_COMPLEXITIES + '.' + COLUMN_COMPLEXITIES_DESCRIPTION +
             " FROM " + TABLE_EXPRESSIONS +
-            " INNER JOIN " + TABLE_EXPRESSION_TO_TYPES + " USING (" + COLUMN_EXPRESSIONS_ID + ')' +
-            " INNER JOIN " + TABLE_TYPES + " USING (" + COLUMN_TYPES_ID + ')' +
+            " INNER JOIN " + TABLE_TYPES + " ON " + TABLE_TYPES + '.' + COLUMN_TYPES_ID + " = " + TABLE_EXPRESSIONS +
+            '.' + COLUMN_EXPRESSIONS_TYPE +
             " INNER JOIN " + TABLE_COMPLEXITIES + " ON " + TABLE_TYPES + '.' + COLUMN_TYPES_COMPLEXITY + " = " + TABLE_COMPLEXITIES +
             '.' + COLUMN_COMPLEXITIES_ID +
             " ORDER BY " + COLUMN_EXPRESSIONS_ID + ')';
