@@ -35,7 +35,7 @@ public final class Calculations {
 
     public static int getExpressionTypeId(String str) {
         if (countOfDigits(str) >= 30) {
-            return 4; // */+- long
+            return 4; // **//++-- long
         }
 
         Set<Character> signs = getExpressionSigns(str);
@@ -45,10 +45,10 @@ public final class Calculations {
         }
 
         if (!signs.contains('+') && !signs.contains('-')) {
-            return 3; // */
+            return 2; // */
         }
 
-        return 2; // */+-
+        return 3; // */+-
     }
 
     public static long countOfDigits(String str) {
