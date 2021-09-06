@@ -24,16 +24,14 @@ import java.sql.*;
 public class DataSource {
 
     private static final String SCHEMA_NAME = "calculator";
-    private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NAME + "?user=USER&password=PASSWORD";
+    private static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/" + SCHEMA_NAME + "?user=root&password=p6zinamu";
 
     private static final String TABLE_EXPRESSIONS = "expressions";
     private static final String COLUMN_EXPRESSIONS_ID = "expression_id";
     private static final String COLUMN_EXPRESSIONS_EXPRESSION = "expression";
     private static final String COLUMN_EXPRESSIONS_ANSWER = "answer";
     private static final String COLUMN_EXPRESSIONS_DATE = "date";
-
-    private static final String TABLE_EXPRESSION_TO_TYPES = "expression_to_types";
-    private static final String COLUMN_EXPRESSION_TO_TYPES_EXPRESSION_ID = "expression_id";
+    private static final String COLUMN_EXPRESSIONS_TYPE = "type";
 
     private static final String TABLE_TYPES = "types";
     private static final String COLUMN_TYPES_ID = "type_id";
@@ -42,7 +40,7 @@ public class DataSource {
 
     private static final String TABLE_COMPLEXITIES = "complexities";
     private static final String COLUMN_COMPLEXITIES_ID = "complexity_id";
-    private static final String COLUMN_COMPLEXITIES_NAME = "name";
+    private static final String COLUMN_COMPLEXITIES_NAME = "complexity_name";
     private static final String COLUMN_COMPLEXITIES_DESCRIPTION = "description";
 
     private static final String EXPRESSIONS_VIEW = "expression_list";
@@ -53,8 +51,8 @@ public class DataSource {
             TABLE_TYPES + '.' + COLUMN_TYPES_TYPE + ", " + TABLE_COMPLEXITIES + '.' + COLUMN_COMPLEXITIES_NAME +
             ", " + TABLE_COMPLEXITIES + '.' + COLUMN_COMPLEXITIES_DESCRIPTION +
             " FROM " + TABLE_EXPRESSIONS +
-            " INNER JOIN " + TABLE_EXPRESSION_TO_TYPES + " USING (" + COLUMN_EXPRESSIONS_ID + ')' +
-            " INNER JOIN " + TABLE_TYPES + " USING (" + COLUMN_TYPES_ID + ')' +
+            " INNER JOIN " + TABLE_TYPES + " ON " + TABLE_TYPES + '.' + COLUMN_TYPES_ID + " = " + TABLE_EXPRESSIONS +
+            '.' + COLUMN_EXPRESSIONS_TYPE +
             " INNER JOIN " + TABLE_COMPLEXITIES + " ON " + TABLE_TYPES + '.' + COLUMN_TYPES_COMPLEXITY + " = " + TABLE_COMPLEXITIES +
             '.' + COLUMN_COMPLEXITIES_ID +
             " ORDER BY " + COLUMN_EXPRESSIONS_ID + ')';
@@ -68,24 +66,18 @@ public class DataSource {
 
     private static final String QUERY_TYPE_BY_ID = "SELECT " + COLUMN_TYPES_TYPE + " FROM " + TABLE_TYPES +
             " WHERE " + COLUMN_TYPES_ID + " = ?";
-
-    private static final String INSERT_EXPRESSION_TO_TYPES = "INSERT INTO " + TABLE_EXPRESSION_TO_TYPES +
-            " VALUES (?, ?)";
     private static final String INSERT_EXPRESSION = "INSERT INTO " + TABLE_EXPRESSIONS + " VALUES " +
             "( DEFAULT, ?, ?, ? )";
 
-    private static final String DELETE_EXPRESSION = "DELETE " + TABLE_EXPRESSIONS + ", " +
-            TABLE_EXPRESSION_TO_TYPES + " FROM " + TABLE_EXPRESSIONS + " INNER JOIN " +
-            TABLE_EXPRESSION_TO_TYPES + " WHERE " + TABLE_EXPRESSIONS + '.' + COLUMN_EXPRESSIONS_ID +
-            " = ?" + " AND " + TABLE_EXPRESSIONS + '.' + COLUMN_EXPRESSIONS_ID + " = " +
-            TABLE_EXPRESSION_TO_TYPES + '.' + COLUMN_EXPRESSION_TO_TYPES_EXPRESSION_ID;
+    private static final String DELETE_EXPRESSION = "DELETE " + TABLE_EXPRESSIONS +
+            " FROM " + TABLE_EXPRESSIONS +
+            " WHERE " + TABLE_EXPRESSIONS + '.' + COLUMN_EXPRESSIONS_ID + " = ?";
 
     private static final String UPDATE_EXPRESSION = "UPDATE " + TABLE_EXPRESSIONS + " SET " +
             COLUMN_EXPRESSIONS_EXPRESSION + " = ?" + ", " + COLUMN_EXPRESSIONS_ANSWER + " = ?" +
             " WHERE " + COLUMN_EXPRESSIONS_ID + " = ?";
 
 
-    private PreparedStatement insertIntoExpressionToTypes;
     private PreparedStatement queryComplexityByTypeId;
     private PreparedStatement queryTypeByTypeId;
     private PreparedStatement insertIntoExpression;
@@ -115,7 +107,6 @@ public class DataSource {
     public boolean open() {
         try {
             conn = DriverManager.getConnection(CONNECTION_STRING);
-            insertIntoExpressionToTypes = conn.prepareStatement(INSERT_EXPRESSION_TO_TYPES);
             queryComplexityByTypeId = conn.prepareStatement(QUERY_COMPLEXITY_BY_TYPE_ID);
             insertIntoExpression = conn.prepareStatement(INSERT_EXPRESSION, Statement.RETURN_GENERATED_KEYS);
             queryTypeByTypeId = conn.prepareStatement(QUERY_TYPE_BY_ID);
@@ -132,8 +123,8 @@ public class DataSource {
     public void close() {
         try {
             PreparedStatement[] preparedStatements = new PreparedStatement[] {
-                    insertIntoExpressionToTypes, queryComplexityByTypeId,
-                    insertIntoExpression, queryTypeByTypeId, deleteExpression, updateExpression
+                    queryComplexityByTypeId, insertIntoExpression,
+                    queryTypeByTypeId, deleteExpression, updateExpression
             };
             for (PreparedStatement p : preparedStatements) {
                 if (p != null) {
@@ -232,7 +223,6 @@ public class DataSource {
                 throw new SQLException("Couldn't get id ");
             }
 
-            insertExpressionToTypes(key, expression.getExpression());
             dataItems.add(expression);
 
         } catch (SQLException e) {
@@ -248,20 +238,6 @@ public class DataSource {
             } catch (SQLException e) {
                 System.out.println("Couldn't reset auto-commit! " + e.getMessage());
             }
-        }
-    }
-
-    private void insertExpressionToTypes(Integer expression_id, String expression) {
-        try {
-            insertIntoExpressionToTypes.setInt(1, expression_id);
-            insertIntoExpressionToTypes.setInt(2, Calculations.getExpressionTypeId(expression));
-
-            if (insertIntoExpressionToTypes.executeUpdate() != 1) {
-                throw new SQLException("Couldn't insert expression to type id");
-            }
-
-        } catch (SQLException e) {
-            e.printStackTrace();
         }
     }
 
