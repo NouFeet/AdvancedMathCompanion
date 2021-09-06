@@ -23,7 +23,7 @@ import java.sql.*;
 public class DataSource {
 
     private static final String SCHEMA_NAME = "calculator";
-    private static final String CONNECTION_STRING = "jdbc:mysql://localhost:3306/" + SCHEMA_NAME + "?user=root&password=p6zinamu";
+    private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NAME + "?user=USER&password=PASSWORD";
 
     private static final String TABLE_EXPRESSIONS = "expressions";
     private static final String COLUMN_EXPRESSIONS_ID = "expression_id";
