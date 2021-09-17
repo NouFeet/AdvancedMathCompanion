@@ -27,8 +27,15 @@ import java.util.stream.Collectors;
 public final class Calculations {
 
     private static final List<Character> mathSigns = Arrays.asList('+', '-', '*', 'x', '/', '÷');
+
+    // Valid format is: 2 / 3 + 1 * 4
+    // No redundant spaces or unclear symbols.
+    // All numbers are only integers.
     private static final Pattern validFormat = Pattern.compile("^-?\\d+( [+\\-*/] -?\\d+)+$");
-    private static boolean isRecursive = false;
+
+    // Check if some expression has division or multiplication,
+    // is that is true, then we should split it again
+    private static boolean hasStrongOperations = false;
 
     private Calculations() {}
 
@@ -84,16 +91,28 @@ public final class Calculations {
     }
 
     // Splits expression by math order
-    // Example: 2 * 3 | - | 1 / 3 |
+    // Example: 2 * 3 | - | 1 / 3 | + | 2
     // 1) 2 * 3
     // 2) 1 / 3
     // 3) -
+    // 4) + 2
     private static String[] splitByOperationsOrder(String expression) {
-        if (isRecursive) {
+        if (hasStrongOperations) {
             return expression.split(" ");
-        } else {
-            return expression.split("(?<=[^/*])\\s(?=[^/*])");
         }
+
+        return expression.split("(?<=[^/*])\\s(?=[^/*])");
+    }
+
+    // If variable s is still an expression and not a number,
+    // then calls method calculate() to solve it.
+    private static BigDecimal convertExpression(String s) {
+        if (s.chars().anyMatch(item -> item == ' ')) {
+            hasStrongOperations = true;
+            return calculate(s);
+        }
+
+        return new BigDecimal(s);
     }
 
     public static BigDecimal calculate(String expression) {
@@ -105,19 +124,16 @@ public final class Calculations {
 
         for (String s : array) {
             if (s.length() == 1 && mathSigns.contains(s.charAt(0))) {
+                // Variable s is an operation symbol
                 operation = s;
             } else {
-                if (s.chars().anyMatch(item -> item == ' ')) {
-                    isRecursive = true;
-                    temp = calculate(s);
-                } else {
-                    temp = new BigDecimal(s);
-                }
+                // Variable s is number or expression(with / or * operations)
+                temp = convertExpression(s);
                 result = calculate(result, temp, operation);
             }
         }
 
-        isRecursive = false;
+        hasStrongOperations = false;
         return result;
     }
 }
