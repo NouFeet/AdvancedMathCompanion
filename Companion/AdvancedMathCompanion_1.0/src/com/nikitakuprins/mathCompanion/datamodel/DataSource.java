@@ -23,7 +23,7 @@ import java.sql.*;
 public class DataSource {
 
     private static final String SCHEMA_NAME = "calculator";
-    private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NAME + "?user=USER&password=PASSWORD";
+    private static final String CONNECTION_STRING = "jdbc:mysql://HOST/" + SCHEMA_NAME + "?user=USERNAME&password=PASSWORD";
 
     private static final String TABLE_EXPRESSIONS = "expressions";
     private static final String COLUMN_EXPRESSIONS_ID = "expression_id";
@@ -107,7 +107,7 @@ public class DataSource {
         try {
             conn = DriverManager.getConnection(CONNECTION_STRING);
             queryComplexityByTypeId = conn.prepareStatement(QUERY_COMPLEXITY_BY_TYPE_ID);
-            insertIntoExpression = conn.prepareStatement(INSERT_EXPRESSION);
+            insertIntoExpression = conn.prepareStatement(INSERT_EXPRESSION, Statement.RETURN_GENERATED_KEYS);
             queryTypeByTypeId = conn.prepareStatement(QUERY_TYPE_BY_ID);
             deleteExpression = conn.prepareStatement(DELETE_EXPRESSION);
             updateExpression = conn.prepareStatement(UPDATE_EXPRESSION);
@@ -215,8 +215,15 @@ public class DataSource {
                 throw new SQLException("Couldn't insert expression");
             }
 
+            ResultSet generatedKeys = insertIntoExpression.getGeneratedKeys();
+            int key;
+            if (generatedKeys.next()) {
+                key = generatedKeys.getInt(1);
+            } else {
+                throw new SQLException("Couldn't get id ");
+            }
 
-
+            expression.setPrimaryKey(key);
             dataItems.add(expression);
 
         } catch (SQLException e) {
