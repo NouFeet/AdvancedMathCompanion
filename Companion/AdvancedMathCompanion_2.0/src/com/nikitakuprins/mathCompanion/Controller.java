@@ -218,6 +218,7 @@ public class Controller {
     }
 
     private void createAndShowDialog(ProcessOption processOption) {
+        // Creating Dialog
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("itemDialog.fxml"));
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(borderPane.getScene().getWindow());
@@ -229,7 +230,7 @@ public class Controller {
 
         DialogController controller = fxmlLoader.getController();
         Expression selectedItem = tableView.getSelectionModel().getSelectedItem();
-
+        // Designing Dialog
         if (processOption.equals(ProcessOption.EDIT)) {
             dialog.setTitle("Editing Item");
             controller.setExpressionField(selectedItem.getExpression());
@@ -240,6 +241,7 @@ public class Controller {
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
+        // Processing result of the dialog
         Optional<ButtonType> result = dialog.showAndWait();
 
         if (result.isPresent() && result.get().equals(ButtonType.OK)) {
