@@ -1,6 +1,6 @@
 # AdvancedMathCompanion
 
-### What is AdvancedCompanion_1.0 and AdvancedCompanion_2.0 versions in Companion folder?
+### What are AdvancedCompanion_1.0 and AdvancedCompanion_2.0 versions in Companion folder?
 
 > The 2.0 version uses stored procedure, while 1.0 not. I created two versions, just for potfolio to show that I have enough skills to do it in the both ways.
 
