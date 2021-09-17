@@ -20,6 +20,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.sql.*;
+import java.util.function.Predicate;
 
 public class DataSource {
 
@@ -67,6 +68,8 @@ public class DataSource {
     private static final String QUERY_TYPE_BY_ID = "SELECT " + COLUMN_TYPES_TYPE + " FROM " + TABLE_TYPES +
             " WHERE " + COLUMN_TYPES_ID + " = ?";
 
+    private static final String QUERY_LAST_INSERT_ID = "SELECT " + "LAST_INSERT_ID()";
+
     private static final String PROCEDURE_INSERT_EXPRESSION = "insert_expression";
     private static final String CALL_INSERT_EXPRESSION = "{CALL " + PROCEDURE_INSERT_EXPRESSION + "(?,?,?,?)}";
 
@@ -78,6 +81,7 @@ public class DataSource {
 
     private PreparedStatement queryComplexityByTypeId;
     private PreparedStatement queryTypeByTypeId;
+    private PreparedStatement queryLastInsertId;
     private CallableStatement callDeleteExpression;
     private CallableStatement callUpdateExpression;
     private CallableStatement callInsertExpression;
@@ -108,6 +112,7 @@ public class DataSource {
 
             queryComplexityByTypeId = conn.prepareStatement(QUERY_COMPLEXITY_BY_TYPE_ID);
             queryTypeByTypeId = conn.prepareStatement(QUERY_TYPE_BY_ID);
+            queryLastInsertId = conn.prepareStatement(QUERY_LAST_INSERT_ID);
             callUpdateExpression = conn.prepareCall(CALL_UPDATE_EXPRESSION);
             callDeleteExpression = conn.prepareCall(CALL_DELETE_EXPRESSION);
             callInsertExpression = conn.prepareCall(CALL_INSERT_EXPRESSION);
@@ -123,7 +128,7 @@ public class DataSource {
         try {
             PreparedStatement[] preparedStatements = new PreparedStatement[] {
                     queryComplexityByTypeId, queryTypeByTypeId, callInsertExpression,
-                    callDeleteExpression, callUpdateExpression
+                    callDeleteExpression, callUpdateExpression, queryLastInsertId
             };
             for (PreparedStatement p : preparedStatements) {
                 if (p != null) p.close();
@@ -207,9 +212,19 @@ public class DataSource {
 
             if (affectedRows != 1) {
                 throw new SQLException("Couldn't insert expression");
-            } else {
-                dataItems.add(expression);
             }
+
+            ResultSet lastId = queryLastInsertId.executeQuery();
+            int key;
+            if (lastId.next()) {
+                key = lastId.getInt(1);
+            } else {
+                throw new SQLException("Unable to get last insert id");
+            }
+
+            System.out.println(key);
+            expression.setPrimaryKey(key);
+            dataItems.add(expression);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -238,9 +253,9 @@ public class DataSource {
     public void deleteExpression(int id) {
         try {
             callDeleteExpression.setInt(1, id);
-
+            System.out.println(id);
             int affectedRows = callDeleteExpression.executeUpdate();
-            if (affectedRows != 2) {
+            if (affectedRows != 1) {
                 throw new SQLException("Couldn't delete expression");
             } else {
                 dataItems.remove(getIndexOfItem(id));
