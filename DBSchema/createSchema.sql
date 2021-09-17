@@ -132,17 +132,6 @@ END$$
 
 DELIMITER ;
 
--- -----------------------------------------------------
--- View `calculator`.`expression_list`
--- -----------------------------------------------------
-DROP TABLE IF EXISTS `calculator`.`expression_list`;
-USE `calculator`;
-CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `calculator`.`expression_list` AS select `calculator`.`expressions`.`expression_id` AS `expression_id`,`calculator`.`expressions`.`expression` AS `expression`,`calculator`.`expressions`.`answer` AS `answer`,`calculator`.`expressions`.`date` AS `date`,`calculator`.`types`.`type` AS `type`,`calculator`.`complexities`.`complexity_name` AS `complexity_name`,`calculator`.`complexities`.`description` AS `description` from ((`calculator`.`expressions` join `calculator`.`types` on((`calculator`.`types`.`type_id` = `calculator`.`expressions`.`type`))) join `calculator`.`complexities` on((`calculator`.`types`.`complexity` = `calculator`.`complexities`.`complexity_id`))) order by `calculator`.`expressions`.`expression_id`;
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
-
 INSERT INTO expressions (expression, answer, date, type) 
 VALUES 
 ("2 + 7 + 9", 18, "2020-08-04", 1),
@@ -156,6 +145,8 @@ VALUES
 ("133 - 149 - 175 + 94 - 184 - 167", -448, "2020-08-04", 3),
 ("17 * 8 - 189 - 197 - 79 + 9 / 162", -328.9444, "2020-08-04", 3);
 
+ALTER TABLE types AUTO_INCREMENT = 1;
+
 INSERT INTO types (type, complexity)
 VALUES
 ("+-", 1),
@@ -163,10 +154,24 @@ VALUES
 ("+-/*", 3),
 ("++--//**", 4);
 
+ALTER TABLE complexities AUTO_INCREMENT = 1;
+
 INSERT INTO complexities (complexity_name, description)
 VALUES
 ("Easy", "Only plus and/or minus"),
 ("Medium", "Only division and/or multiplication"),
 ("Hard", "All or almost all math signs"),
-("Very Hard", "Too long and all or almost all math signs")
+("Very Hard", "Too long and all or almost all math signs");
+
+-- -----------------------------------------------------
+-- View `calculator`.`expression_list`
+-- -----------------------------------------------------
+DROP TABLE IF EXISTS `calculator`.`expression_list`;
+USE `calculator`;
+CREATE  OR REPLACE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `calculator`.`expression_list` AS select `calculator`.`expressions`.`expression_id` AS `expression_id`,`calculator`.`expressions`.`expression` AS `expression`,`calculator`.`expressions`.`answer` AS `answer`,`calculator`.`expressions`.`date` AS `date`,`calculator`.`types`.`type` AS `type`,`calculator`.`complexities`.`complexity_name` AS `complexity_name`,`calculator`.`complexities`.`description` AS `description` from ((`calculator`.`expressions` join `calculator`.`types` on((`calculator`.`types`.`type_id` = `calculator`.`expressions`.`type`))) join `calculator`.`complexities` on((`calculator`.`types`.`complexity` = `calculator`.`complexities`.`complexity_id`))) order by `calculator`.`expressions`.`expression_id`;
+
+SET SQL_MODE=@OLD_SQL_MODE;
+SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
+SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+
 
