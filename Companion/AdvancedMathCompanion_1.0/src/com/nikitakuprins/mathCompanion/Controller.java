@@ -175,6 +175,18 @@ public class Controller {
     @FXML
     private void handleFilterButton() {
         Expression selectedItem = tableView.getSelectionModel().getSelectedItem();
+        Predicate<Expression> predicate = getFilterPredicate();
+
+        filteredList.setPredicate(predicate);
+
+        if (filteredList.contains(selectedItem)) {
+            tableView.getSelectionModel().select(selectedItem);
+        } else {
+            tableView.getSelectionModel().selectFirst();
+        }
+    }
+
+    private Predicate<Expression> getFilterPredicate() {
         List<Predicate<Expression>> excludePredicatesList = new ArrayList<>();
 
         for (ToggleButton toggleButton : buttonToFilter.keySet()) {
@@ -183,16 +195,14 @@ public class Controller {
             }
         }
 
-        Predicate<Expression> predicate = Predicate.not(excludePredicatesList.stream().reduce(Predicate::or).orElse(wantAllItems));
-
-        filteredList.setPredicate(excludePredicatesList.size() == 4 || excludePredicatesList.size() == 0 ? wantAllItems : predicate);
-
-        if (filteredList.contains(selectedItem)) {
-            tableView.getSelectionModel().select(selectedItem);
-        } else {
-            tableView.getSelectionModel().selectFirst();
+        // If we selected all filters or deselected every filter, then show all expressions.
+        if (excludePredicatesList.size() == 4 || excludePredicatesList.size() == 0) {
+            return wantAllItems;
         }
+
+        return Predicate.not(excludePredicatesList.stream().reduce(Predicate::or).orElse(wantAllItems));
     }
+
 
     private enum ProcessOption {
         NEW, EDIT
@@ -209,6 +219,7 @@ public class Controller {
     }
 
     private void createAndShowDialog(ProcessOption processOption) {
+        // Creating Dialog
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("itemDialog.fxml"));
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(borderPane.getScene().getWindow());
@@ -220,7 +231,7 @@ public class Controller {
 
         DialogController controller = fxmlLoader.getController();
         Expression selectedItem = tableView.getSelectionModel().getSelectedItem();
-
+        // Designing Dialog
         if (processOption.equals(ProcessOption.EDIT)) {
             dialog.setTitle("Editing Item");
             controller.setExpressionField(selectedItem.getExpression());
@@ -231,22 +242,29 @@ public class Controller {
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
+        // Processing result of the dialog
         Optional<ButtonType> result = dialog.showAndWait();
 
         if (result.isPresent() && result.get().equals(ButtonType.OK)) {
-            Expression newItem = controller.processItem();
-            if (newItem == null) {
-                createErrorAlert();
-            } else {
-                if (processOption.equals(ProcessOption.NEW)) {
-                    DataSource.getInstance().insertExpression(newItem);
-                } else if (processOption.equals(ProcessOption.EDIT)) {
-                    DataSource.getInstance().updateExpression(selectedItem, newItem);
-                }
-                tableView.getSelectionModel().selectFirst();
-            }
+            Expression newItem = controller.createItem();
+            processItem(newItem, selectedItem, processOption);
         }
     }
+
+    private void processItem(Expression newItem, Expression selectedItem, ProcessOption processOption) {
+        if (newItem == null) {
+            createErrorAlert();
+            return;
+        }
+
+        if (processOption.equals(ProcessOption.NEW)) {
+            DataSource.getInstance().insertExpression(newItem);
+        } else if (processOption.equals(ProcessOption.EDIT)) {
+            DataSource.getInstance().updateExpression(selectedItem, newItem);
+        }
+        tableView.getSelectionModel().selectFirst();
+    }
+
 
     private void createErrorAlert() {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -255,7 +273,8 @@ public class Controller {
         alert.setContentText("Possible mistakes:\n" +
                 "1. The text is empty\n" +
                 "2. The text contains invalid symbols like: 'A','$','!'\n" +
-                "3. The text does not have enough spaces or they are redundant");
+                "3. The text contains has DECIMAL numbers but it should be INTEGERS.\n" +
+                "4. The text does not have enough spaces or they are redundant");
         alert.show();
     }
 

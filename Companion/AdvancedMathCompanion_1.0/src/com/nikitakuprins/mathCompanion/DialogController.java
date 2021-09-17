@@ -38,7 +38,7 @@ public class DialogController {
         this.expressionField.setText(str);
     }
 
-    public Expression processItem() {
+    public Expression createItem() {
         String expression = expressionField.getText();
 
         if (Calculations.isValidFormat(expression)) {
