@@ -243,18 +243,23 @@ public class Controller {
         Optional<ButtonType> result = dialog.showAndWait();
 
         if (result.isPresent() && result.get().equals(ButtonType.OK)) {
-            Expression newItem = controller.processItem();
-            if (newItem == null) {
-                createErrorAlert();
-            } else {
-                if (processOption.equals(ProcessOption.NEW)) {
-                    DataSource.getInstance().insertExpression(newItem);
-                } else if (processOption.equals(ProcessOption.EDIT)) {
-                    DataSource.getInstance().updateExpression(selectedItem, newItem);
-                }
-                tableView.getSelectionModel().selectFirst();
-            }
+            Expression newItem = controller.createItem();
+            processItem(newItem, selectedItem, processOption);
         }
+    }
+
+    private void processItem(Expression newItem, Expression selectedItem, ProcessOption processOption) {
+        if (newItem == null) {
+            createErrorAlert();
+            return;
+        }
+
+        if (processOption.equals(ProcessOption.NEW)) {
+            DataSource.getInstance().insertExpression(newItem);
+        } else if (processOption.equals(ProcessOption.EDIT)) {
+            DataSource.getInstance().updateExpression(selectedItem, newItem);
+        }
+        tableView.getSelectionModel().selectFirst();
     }
 
     private void createErrorAlert() {
