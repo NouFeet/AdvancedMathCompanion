@@ -83,17 +83,25 @@ public final class Calculations {
         }
     }
 
+    // Splits expression by math order
+    // Example: 2 * 3 | - | 1 / 3 |
+    // 1) 2 * 3
+    // 2) 1 / 3
+    // 3) -
+    private static String[] splitByOperationsOrder(String expression) {
+        if (isRecursive) {
+            return expression.split(" ");
+        } else {
+            return expression.split("(?<=[^/*])\\s(?=[^/*])");
+        }
+    }
+
     public static BigDecimal calculate(String expression) {
         BigDecimal result = BigDecimal.ZERO;
         BigDecimal temp;
         String operation = "+";
-        String[] array;
+        String[] array = splitByOperationsOrder(expression);
 
-        if (isRecursive) {
-            array = expression.split(" "); // for / and * expressions
-        } else {
-            array = expression.split("(?<=[^/*])\\s(?=[^/*])"); // 3 / 4 * 4 | - | 5 | + | 3 * 5 | + | 1
-        }
 
         for (String s : array) {
             if (s.length() == 1 && mathSigns.contains(s.charAt(0))) {
