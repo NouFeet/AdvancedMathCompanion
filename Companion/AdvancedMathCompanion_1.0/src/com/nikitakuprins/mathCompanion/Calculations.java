@@ -33,10 +33,6 @@ public final class Calculations {
     // All numbers are only integers.
     private static final Pattern validFormat = Pattern.compile("^-?\\d+( [+\\-*/] -?\\d+)+$");
 
-    // Check if some expression has division or multiplication,
-    // is that is true, then we should split it again
-    private static boolean hasStrongOperations = false;
-
     private Calculations() {}
 
     public static int getExpressionTypeId(String str) {
@@ -75,6 +71,26 @@ public final class Calculations {
         return matcher.matches();
     }
 
+    public static BigDecimal calculate(String expression) {
+        BigDecimal result = BigDecimal.ZERO;
+        BigDecimal temp;
+        String operation = "+";
+        String[] expressionOrders = splitByOperationsOrder(expression);
+
+        for (String s : expressionOrders) {
+            if (s.length() == 1 && mathSigns.contains(s.charAt(0))) {
+                // Variable s is an operation symbol
+                operation = s;
+            } else {
+                // Variable s is number or expression(with / or * operations)
+                temp = convertStrongExpressionToNum(s);
+                result = calculate(result, temp, operation);
+            }
+        }
+
+        return result;
+    }
+
     public static BigDecimal calculate(BigDecimal num1, BigDecimal num2, String operation) {
         switch (operation) {
             case "+":
@@ -91,49 +107,30 @@ public final class Calculations {
     }
 
     // Splits expression by math order
-    // Example: 2 * 3 | - | 1 / 3 | + | 2
-    // 1) 2 * 3
-    // 2) 1 / 3
-    // 3) -
-    // 4) + 2
+    // Example:
+    // Input: 2 * 3 - 1 / 3 + 2
+    // Output: [ 2 * 3, - , 1 / 3 , + , 2 ]
+    // Input: 2 * 3 / 5 * 7
+    // Output: [ 2, * , 3 , / , 5 , * , 7 ]
     private static String[] splitByOperationsOrder(String expression) {
-        if (hasStrongOperations) {
+
+        if (!getExpressionSigns(expression).contains('+') &&
+                !getExpressionSigns(expression).contains('-')) {
             return expression.split(" ");
         }
 
         return expression.split("(?<=[^/*])\\s(?=[^/*])");
     }
 
-    // If variable s is still an expression and not a number,
-    // then calls method calculate() to solve it.
-    private static BigDecimal convertExpression(String s) {
+    // Converts expression to BigDecimal.
+    // If expression is like "2 / 5 * 7", then calculates it
+    // and return BigDecimal
+    // If expression is already calculated, then just return BigDecimal
+    private static BigDecimal convertStrongExpressionToNum(String s) {
         if (s.chars().anyMatch(item -> item == ' ')) {
-            hasStrongOperations = true;
             return calculate(s);
         }
 
         return new BigDecimal(s);
-    }
-
-    public static BigDecimal calculate(String expression) {
-        BigDecimal result = BigDecimal.ZERO;
-        BigDecimal temp;
-        String operation = "+";
-        String[] array = splitByOperationsOrder(expression);
-
-
-        for (String s : array) {
-            if (s.length() == 1 && mathSigns.contains(s.charAt(0))) {
-                // Variable s is an operation symbol
-                operation = s;
-            } else {
-                // Variable s is number or expression(with / or * operations)
-                temp = convertExpression(s);
-                result = calculate(result, temp, operation);
-            }
-        }
-
-        hasStrongOperations = false;
-        return result;
     }
 }
