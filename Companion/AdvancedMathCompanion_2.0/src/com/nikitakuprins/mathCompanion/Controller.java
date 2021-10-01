@@ -72,8 +72,9 @@ public class Controller {
     @FXML
     private Label resultArea;
 
-    private BigDecimal number;
-    private BigDecimal temp;
+    private BigDecimal number = BigDecimal.ZERO;
+    private BigDecimal temp = BigDecimal.ZERO;
+    private StringBuilder resultBuilder;
     private final BigDecimal ONE_HUNDRED = new BigDecimal("100");
     private String operation = "";
     private boolean isTypingNum = true;
@@ -109,58 +110,76 @@ public class Controller {
 
     @FXML
     private void handleCalculatorButton(ActionEvent evt) {
-        String buttonTitle = ((Button) evt.getSource()).getText();
-        String oldResult = resultArea.getText();
-        StringBuilder resultBuilder = new StringBuilder(oldResult);
+        String pressedButtonTitle = ((Button) evt.getSource()).getText();
+        resultBuilder = new StringBuilder(resultArea.getText());
 
-        if (buttonTitle.matches("[0-9]")) {
-            if (oldResult.matches("[+\\-x÷]|-*0")) {
+        if (pressedButtonTitle.equals("AC")) {
+            resetCalculatorData();
+        } else if (!inputCalculatorText(pressedButtonTitle) && isTypingNum) {
+            processCalculatorOperations(pressedButtonTitle);
+        }
+
+        processCalculatorResult();
+    }
+
+    private boolean inputCalculatorText(String pressedButtonTitle) {
+        if (pressedButtonTitle.matches("[0-9]")) {
+            if (resultBuilder.toString().matches("[+\\-x÷]|-*0")) {
                 resultBuilder = new StringBuilder();
             }
-            resultBuilder.append(buttonTitle);
             isTypingNum = true;
-        } else if (buttonTitle.matches("[+\\-x÷]") && (operation.isEmpty() || !isTypingNum)) {
-            operation = buttonTitle;
-            resultBuilder = new StringBuilder(buttonTitle);
+            resultBuilder.append(pressedButtonTitle);
+            return true;
+        } else if (pressedButtonTitle.matches("[+\\-x÷]") && (operation.isEmpty() || !isTypingNum)) {
+            operation = pressedButtonTitle;
             isTypingNum = false;
-        } else if (buttonTitle.equals("AC")) {
-            resultBuilder = new StringBuilder("0");
-            number = BigDecimal.ZERO;
-            temp = BigDecimal.ZERO;
-            isTypingNum = true;
-            operation = "";
-
-        } else if (isTypingNum) {
-            if (buttonTitle.equals("%")) {
-                BigDecimal result = Calculations.calculate(number, ONE_HUNDRED, "÷");
-                resultBuilder = new StringBuilder(result + "");
-            } else if (buttonTitle.equals("+/-")) {
-                if (resultBuilder.indexOf("-") != -1) {
-                    resultBuilder.deleteCharAt(0);
-                } else {
-                    resultBuilder.insert(0, "-");
-                }
-            } else if (buttonTitle.equals(".") && !oldResult.contains(".")) {
-                resultBuilder.append(buttonTitle);
-            } else if (!operation.isEmpty()) {
-                BigDecimal result = Calculations.calculate(number, temp, operation);
-                resultBuilder = new StringBuilder(result + "");
-                operation = "";
-            }
+            resultBuilder = new StringBuilder(pressedButtonTitle);
+            return true;
         }
+        return false;
+    }
 
+    private void processCalculatorOperations(String pressedButtonTitle) {
+        if (pressedButtonTitle.equals("%")) {
+            BigDecimal result = Calculations.calculate(number, ONE_HUNDRED, "÷");
+            resultBuilder = new StringBuilder(result + "");
+        } else if (pressedButtonTitle.equals("+/-")) {
+            if (resultBuilder.indexOf("-") != -1) {
+                resultBuilder.deleteCharAt(0);
+            } else {
+                resultBuilder.insert(0, "-");
+            }
+        } else if (pressedButtonTitle.equals(".") && !resultBuilder.toString().contains(".")) {
+            resultBuilder.append(pressedButtonTitle);
+        } else if (!operation.isEmpty()){
+            BigDecimal result = Calculations.calculate(number, temp, operation);
+            operation = "";
+            resultBuilder = new StringBuilder(result + "");
+        }
+    }
+
+    private void processCalculatorResult() {
         String newResult = resultBuilder.toString();
 
-        if (newResult.length() <= 13) {
-            resultArea.setText(newResult);
-            if (operation.isEmpty()) {
-                number = new BigDecimal(newResult);
-            } else if (isTypingNum) {
-                temp = new BigDecimal(newResult);
-            }
-        } else {
+        if (newResult.length() > 13) {
             resultArea.setText("Out of bounds");
+            return;
         }
+
+        resultArea.setText(newResult);
+        if (operation.isEmpty()) {
+            number = new BigDecimal(newResult);
+        } else if (isTypingNum) {
+            temp = new BigDecimal(newResult);
+        }
+    }
+
+    private void resetCalculatorData() {
+        resultBuilder = new StringBuilder("0");
+        number = BigDecimal.ZERO;
+        temp = BigDecimal.ZERO;
+        isTypingNum = false;
+        operation = "";
     }
 
     //Expressions list ->
