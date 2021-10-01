@@ -300,7 +300,7 @@ public class Controller {
     @FXML
     private void deleteItem() {
         Expression item = tableView.getSelectionModel().getSelectedItem();
-        if (item != null) {
+        if (item == null) {
             return;
         }
 
